@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import MobileMenu from "./MobileMenu";
-import ProfileDropdown from "./ProfileDropdown";
+import ProfileDropdown from "./ProfileDropDown";
 import useClickOutside from "../hooks/useClickOutSide";
 import { FlipWords } from "./ui/FlipWord";
 
