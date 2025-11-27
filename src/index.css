@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Rosca';
+  src: url('./assets/fonts/rosca.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rosca';
+  src: url('./assets/fonts/rosca-slant.otf') format('opentype');
+  font-weight: normal;
+  font-style: italic; 
+  font-display: swap;
+}
+
+@theme {
+  --font-rosca: "Rosca", monospace; 
+  --animate-shimmer: shimmer 2.5s linear infinite;
+  --animate-shine: shine 2.2s infinite linear;
+  --animate-aurora: aurora 60s linear infinite;
+  --animate-slide-in-right: slide-in-right 0.6s ease forwards;
+  --animate-flame-flicker: flame-flicker 1s infinite ease-in-out;
+  --animate-number-pop: number-pop 0.35s ease-out;
+  --animate-fire-burst: fire-burst 0.6s ease-out;
+  --animate-heat-waves: heat-waves 3s ease-in-out infinite;
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  @keyframes shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  @keyframes aurora {
+    from { background-position: 50% 50%, 50% 50%; }
+    to { background-position: 350% 50%, 350% 50%; }
+  }
+
+  @keyframes slide-in-right {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes flame-flicker {
+    0%, 100% { transform: scale(1) rotate(-1deg); }
+    50% { transform: scale(1.05) rotate(1deg); }
+  }
+
+  @keyframes number-pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    60% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes fire-burst {
+    0% { transform: scale(0.7); opacity: 0.8; }
+    70% { transform: scale(1.4); opacity: 0.3; }
+    100% { transform: scale(1); opacity: 0; }
+  }
+
+  @keyframes heat-waves {
+    0%, 100% { opacity: 0.08; transform: scale(1); }
+    50% { opacity: 0.15; transform: scale(1.03); }
+  }
+}
+
+:root {
+  --tile: hsla(221, 100%, 80%, 0.1);
+  --fire-glow: 15 100% 50%; 
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip; 
+  width: 100%;
+}
+
+body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #ffffff;
+  overflow-x: clip; 
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: #f0f0f0;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ffffff;
+  border-radius: 1px;
+  border: 2px solid #f0f0f0;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
+  border-radius: 6px;
+}
+
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+
+  .pixelated {
+    image-rendering: pixelated;
+  }
+}
+
+.auth-page-bg {
+  background: linear-gradient(180deg, #0b1220, #0f172a);
+}
