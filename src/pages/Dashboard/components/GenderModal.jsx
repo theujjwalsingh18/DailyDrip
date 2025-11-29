@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import api from "../../api/index";
+import api from "../../../api/index";
 
 export default function GenderModal({ user, setUser }) {
     const [isOpen, setIsOpen] = useState(false);

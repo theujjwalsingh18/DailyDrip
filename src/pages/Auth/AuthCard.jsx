@@ -2,15 +2,14 @@ import React from "react";
 
 export default function AuthCard({ children, title, subtitle, oauth }) {
   return (
-    <div className="bg-white/80 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-2xl border border-white/50 w-full transform transition-all duration-500">
-      
-      <div className="text-center mb-8 space-y-2">
-        
-        <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">{title}</h1>
-        <p className="text-gray-500 text-sm font-medium">{subtitle}</p>
-      </div>
+    <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 w-full transform transition-all duration-500
+                    p-6 sm:p-12">
 
-      <div className="mb-8">
+      <div className="text-center mb-8 space-y-2">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-tight">{title}</h1>
+        <p className="text-gray-500 text-sm sm:text-base font-medium">{subtitle}</p>
+      </div>
+      <div className="mb-8 flex justify-center w-full">
         {oauth}
       </div>
 

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { MapPin, LocateFixed, Camera, User } from "lucide-react";
-import { AnimatedText } from "../../components/ui/AnimateText";
+import { AnimatedText } from "../../../components/ui/AnimateText";
 import { StreakCounter } from "@/components/ui/StreakCounter";
-import api from "../../api";
+import api from "@/api";
 import useToast from "@/hooks/useToast";
 import { config } from "@/config/env";
 
 const CLOUDINARY_UPLOAD_PRESET = config.CLOUDINARY_UPLOAD_PRESET;
 const CLOUDINARY_UPLOAD_URL = config.CLOUDINARY_UPLOAD_URL;
+
+
 const formatLocationString = (loc) => {
   if (!loc) return "User location";
   const parts = [loc.city, loc.state, loc.country].filter(Boolean);
@@ -28,7 +30,7 @@ const uploadImageToCloudinary = async (file) => {
 };
 
 export default function ProfileCard({ user, onSave }) {
-  const {successToast,warningToast,errorToast} = useToast()
+  const { successToast, warningToast, errorToast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isFetchingLocation, setIsFetchingLocation] = useState(false);
@@ -73,24 +75,24 @@ export default function ProfileCard({ user, onSave }) {
         try {
           const newLat = pos.coords.latitude;
           const newLon = pos.coords.longitude;
-
           setLat(newLat);
           setLon(newLon);
 
           const res = await api.get(`/reverse?lat=${newLat}&lon=${newLon}`);
           const data = res.data;
-
-          console.log("Reverse location:", data);
-
-          setLocation({
-            ...data,
+          const cleanLocation = {
+            city: data.details?.city || "",
+            state: data.details?.state || "",
+            country: data.details?.country || "",
             lat: newLat,
             lon: newLon,
-          });
+          };
+
+          setLocation(cleanLocation);
 
         } catch (err) {
           console.error("Location Error:", err);
-          alert("Could not fetch address.");
+          errorToast("Could not fetch address details.");
         } finally {
           setIsFetchingLocation(false);
         }
@@ -103,7 +105,6 @@ export default function ProfileCard({ user, onSave }) {
       { enableHighAccuracy: true }
     );
   };
-
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -118,7 +119,6 @@ export default function ProfileCard({ user, onSave }) {
     reader.onload = (ev) => setProfilePic(ev.target.result);
     reader.readAsDataURL(file);
   };
-
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -140,22 +140,21 @@ export default function ProfileCard({ user, onSave }) {
         picture: pictureUrl,
         gender,
         streak,
-        location,
+        location: location,
         lat,
         lon
       });
 
       setTimeout(() => setIsEditing(false), 400);
-
     } catch (err) {
       errorToast("Failed to save profile");
     } finally {
       setIsSaving(false);
     }
   };
+
   const handleCancel = () => {
     if (!user) return;
-
     setFullName(user.fullName);
     setProfilePic(user.picture);
     setStreak(user.streak);
@@ -163,7 +162,6 @@ export default function ProfileCard({ user, onSave }) {
     setLat(user.location?.lat ?? null);
     setLon(user.location?.lon ?? null);
     setGender(user.gender);
-
     setIsEditing(false);
   };
 
@@ -176,9 +174,7 @@ export default function ProfileCard({ user, onSave }) {
         transition={{ duration: 0.8, ease: "easeInOut" }}
         style={{ transformStyle: "preserve-3d" }}
       >
-
         <div className="absolute inset-0 w-full h-full rounded-3xl shadow-md border border-gray-100 p-6 flex flex-col items-center [backface-visibility:hidden]">
-
           <div className="mt-4 w-40 h-40 rounded-full p-1 bg-white shadow-lg mb-4 relative">
             <div className="w-full h-full rounded-full overflow-hidden bg-gray-50 flex items-center justify-center border border-gray-100">
               {profilePic ? <img src={profilePic} className="w-full h-full object-cover" /> : <User className="w-12 h-12 text-gray-300" />}
@@ -209,7 +205,6 @@ export default function ProfileCard({ user, onSave }) {
           >
             Edit Profile
           </button>
-
         </div>
         <div className="absolute inset-0 w-full h-full [transform:rotateY(180deg)] rounded-3xl bg-white shadow-2xl border border-gray-100 p-6 flex flex-col items-center [backface-visibility:hidden] overflow-y-auto scrollbar-hide">
           <h3 className="text-2xl font-rosca italic text-gray-800 mb-6">Edit Profile</h3>
@@ -250,6 +245,7 @@ export default function ProfileCard({ user, onSave }) {
                 ))}
               </div>
             </div>
+
             <div>
               <label className="block text-xs font-bold text-gray-500 mb-1">Location</label>
               <div className="flex items-center gap-2">
@@ -272,11 +268,11 @@ export default function ProfileCard({ user, onSave }) {
               </div>
             </div>
           </div>
+
           <div className="flex w-full max-w-xs font-rosca gap-3 mt-auto pt-6">
             <button onClick={handleCancel} className="flex-1 py-3 rounded-full bg-gray-100 text-gray-600">
               Cancel
             </button>
-
             <button
               onClick={handleSave}
               disabled={isSaving || isFetchingLocation}

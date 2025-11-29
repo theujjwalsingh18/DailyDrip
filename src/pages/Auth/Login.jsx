@@ -63,23 +63,23 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-pink-50/30">
-      <div className="w-full max-w-lg">
+      <div className="w-full max-w-2xl">
         <AuthCard
           title="Welcome Back ♡"
           subtitle="Log in and continue your cute journey!"
           oauth={
-            <div className="w-full">
+            <div className="w-full flex justify-center">
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={() => errorToast("Google Connection Failed")}
                 size="large"
-                width="100%"
+                shape="pill"
+                text="signin_with"
               />
             </div>
           }
         >
           <form className="space-y-6" onSubmit={submit}>
-            
             <div className="space-y-1">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -135,8 +135,8 @@ export default function Login() {
               type="submit"
               disabled={isLoading}
               className="w-full h-12 bg-pink-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-pink-200
-                         hover:bg-pink-600 hover:shadow-pink-300 active:scale-[0.98] transition-all 
-                         disabled:bg-pink-300 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                          hover:bg-pink-600 hover:shadow-pink-300 active:scale-[0.98] transition-all 
+                          disabled:bg-pink-300 disabled:cursor-not-allowed flex justify-center items-center gap-2"
             >
               {isLoading ? <Loader2 className="animate-spin" size={22} /> : "Login"}
             </button>

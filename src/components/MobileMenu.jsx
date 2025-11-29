@@ -5,8 +5,8 @@ import { FiLogOut, FiTrash2, FiX } from "react-icons/fi";
 import  useAuth  from "@/context/AuthContext";
 import useToast from "@/hooks/useToast";
 import api from "@/api";
-import ProfileCard from "@/pages/Dashboard/ProfileCard";
-import NotificationSettings from "@/pages/Dashboard/NotificationSettings";
+import ProfileCard from "@/pages/Dashboard/ProfileSection/ProfileCard";
+import NotificationSettings from "@/pages/Dashboard/ProfileSection/NotificationSettings";
 
 export default function MobileMenu({ open, onClose, navLinks, onNavigate, user }) {
   const { fetchMe, logout } = useAuth();

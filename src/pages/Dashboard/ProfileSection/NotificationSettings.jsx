@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Mail, Send, Loader2} from "lucide-react";
 import Switch from "@/components/ui/Switch";
-import api from "../../api";
+import api from "@/api";
 
 const TELEGRAM_BOT_URL = "https://t.me/uji_dailydrip_bot";
 
