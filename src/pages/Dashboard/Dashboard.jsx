@@ -18,7 +18,7 @@ import { useDashboardData } from "@/hooks/useDashboardData";
 export default function Dashboard() {
   const { user, fetchMe } = useAuth();
   const { 
-    weatherData, 
+    weatherData,
     aiData, 
     isLoadingWeather, 
     isLoadingAI, 
