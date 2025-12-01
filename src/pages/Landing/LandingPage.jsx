@@ -24,7 +24,7 @@ export default function LandingPage() {
 
         <BackgroundBeamsWithCollision>
           <h2 className="text-2xl relative z-20  md:text-4xl lg:text-7xl font-bold text-center text-white font-sans tracking-tight">
-            Ready to Wake Up Smarter? <br />
+            Ready to Wake Up Smarter ? <br />
             <div className="relative mx-auto inline-block w-max">
               <div className="absolute left-0 top-[1px] bg-clip-text bg-no-repeat text-transparent bg-gradient-to-r py-4 from-purple-500 via-violet-500 to-pink-500">
                 <span>Join DailyDrip </span>

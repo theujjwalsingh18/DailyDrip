@@ -7,21 +7,38 @@ const CACHE_KEY_AI = "dashboard_ai_v1";
 const CACHE_DURATION = 30 * 60 * 1000;
 
 export function useDashboardData(user, fetchMe) {
-    const [weatherData, setWeatherData] = useState(() => loadFromCache(CACHE_KEY_WEATHER));
-    const [aiData, setAiData] = useState(() => loadFromCache(CACHE_KEY_AI));
-    const [isLoadingWeather, setIsLoadingWeather] = useState(() => !loadFromCache(CACHE_KEY_WEATHER));
-    const [isLoadingAI, setIsLoadingAI] = useState(() => !loadFromCache(CACHE_KEY_AI));
-    const [isLocationMissing, setIsLocationMissing] = useState(false);
+    const [weatherData, setWeatherData] = useState(() => loadFromCache(CACHE_KEY_WEATHER, user?._id));
+    const [aiData, setAiData] = useState(() => loadFromCache(CACHE_KEY_AI, user?._id));
+    const [isLoadingWeather, setIsLoadingWeather] = useState(() => !loadFromCache(CACHE_KEY_WEATHER, user?._id));
+    const [isLoadingAI, setIsLoadingAI] = useState(() => !loadFromCache(CACHE_KEY_AI, user?._id));
 
-    const hasFetched = useRef(false);
+    const [isLocationMissing, setIsLocationMissing] = useState(false);
+    const isFetching = useRef(false);
     const { successToast } = useToast();
 
     useEffect(() => {
+        if (user?._id) {
+            const cachedWeather = loadFromCache(CACHE_KEY_WEATHER, user._id);
+            const cachedAi = loadFromCache(CACHE_KEY_AI, user._id);
+
+            setWeatherData(cachedWeather);
+            setAiData(cachedAi);
+            setIsLoadingWeather(!cachedWeather);
+            setIsLoadingAI(!cachedAi);
+            isFetching.current = false;
+        } else {
+            setWeatherData(null);
+            setAiData(null);
+        }
+    }, [user?._id]);
+
+    useEffect(() => {
         if (!user) return;
-        if (hasFetched.current) return;
+        if (isFetching.current) return;
+        if (weatherData && aiData) return;
 
         const executeDashboardLogic = async () => {
-            hasFetched.current = true;
+            isFetching.current = true;
             setIsLocationMissing(false);
 
             try {
@@ -35,10 +52,8 @@ export function useDashboardData(user, fetchMe) {
                         });
                         lat = pos.coords.latitude;
                         lon = pos.coords.longitude;
-
                         await handleLocationUpdate(lat, lon, fetchMe, "GPS");
                         successToast("Location updated via GPS");
-
                     } catch (gpsError) {
                         console.warn("GPS failed, trying IP fallback...");
                         const ipLoc = await fetchIpLocation();
@@ -52,6 +67,7 @@ export function useDashboardData(user, fetchMe) {
                             setIsLocationMissing(true);
                             setIsLoadingWeather(false);
                             setIsLoadingAI(false);
+                            isFetching.current = false;
                             return;
                         }
                     }
@@ -67,13 +83,22 @@ export function useDashboardData(user, fetchMe) {
                     };
 
                     setWeatherData(freshWeather);
-                    saveToCache(CACHE_KEY_WEATHER, freshWeather);
-                    setIsLoadingWeather(false);
+                    saveToCache(CACHE_KEY_WEATHER, freshWeather, user._id);
                 } catch (e) {
                     console.error("Weather fetch failed", e);
+                } finally {
                     setIsLoadingWeather(false);
                 }
+
+                if (!user.gender || user.gender === "unisex") {
+                    console.log("Gender missing - skipping AI fetch until update.");
+                    setIsLoadingAI(false);
+                    isFetching.current = false;
+                    return;
+                }
+
                 try {
+                    setIsLoadingAI(true);
                     const aiRes = await api.get("/dashboard/today");
                     const freshAi = {
                         outfit: aiRes.data.outfit,
@@ -81,12 +106,11 @@ export function useDashboardData(user, fetchMe) {
                     };
 
                     setAiData(freshAi);
-                    saveToCache(CACHE_KEY_AI, freshAi);
-                    setIsLoadingAI(false);
-
+                    saveToCache(CACHE_KEY_AI, freshAi, user._id);
                     await fetchMe();
                 } catch (e) {
                     console.error("AI fetch failed", e);
+                } finally {
                     setIsLoadingAI(false);
                 }
 
@@ -94,11 +118,13 @@ export function useDashboardData(user, fetchMe) {
                 console.error("Critical Dashboard Error", err);
                 setIsLoadingWeather(false);
                 setIsLoadingAI(false);
+            } finally {
+                isFetching.current = false;
             }
         };
 
         executeDashboardLogic();
-    }, [user]);
+    }, [user?.location?.lat, user?.gender, user?._id]);
 
     return {
         weatherData,
@@ -109,18 +135,25 @@ export function useDashboardData(user, fetchMe) {
     };
 }
 
-function loadFromCache(key) {
+function loadFromCache(key, currentUserId) {
     try {
+        if (!currentUserId) return null;
+
         const item = localStorage.getItem(key);
         if (!item) return null;
 
         const parsed = JSON.parse(item);
-        const age = Date.now() - parsed.timestamp;
+        if (parsed.userId !== currentUserId) {
+            console.log("Cache belongs to different user, invalidating.");
+            return null;
+        }
 
+        const age = Date.now() - parsed.timestamp;
         if (age > CACHE_DURATION) {
             localStorage.removeItem(key);
             return null;
         }
+
         return parsed.data;
     } catch (error) {
         console.warn("Cache parse error", error);
@@ -128,11 +161,12 @@ function loadFromCache(key) {
     }
 }
 
-function saveToCache(key, data) {
+function saveToCache(key, data, userId) {
     try {
         const payload = {
             data: data,
             timestamp: Date.now(),
+            userId: userId,
         };
         localStorage.setItem(key, JSON.stringify(payload));
     } catch (error) {
@@ -161,7 +195,6 @@ async function fetchIpLocation() {
     }
     return null;
 }
-
 
 async function handleLocationUpdate(lat, lon, fetchMe, source) {
     try {

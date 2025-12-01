@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import { MorphingText } from '@/components/ui/MorphingText';
 import { config } from '@/config/env';
+
 const Hero = () => {
     const [isDemoOpen, setIsDemoOpen] = useState(false);
     const DEMO_URL = config.DEMO_URL;
+
+    const ref = useRef(null);
+    const { scrollYProgress } = useScroll({
+        target: ref,
+        offset: ["start start", "end start"]
+    });
+    const parallaxY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+
     const handleConnectTelegram = () => {
-        window.open('"https://t.me/uji_dailydrip_bot"', '_blank'); 
+        window.open('https://t.me/uji_dailydrip_bot', '_blank'); 
     };
 
     const handleCloseModal = (e) => {
@@ -15,7 +25,7 @@ const Hero = () => {
     };
 
     return (
-        <div className="relative min-h-screen w-full overflow-hidden bg-[#A0D4FF] font-sans selection:bg-blue-200">
+        <div ref={ref} className="relative min-h-screen w-full overflow-hidden bg-[#A0D4FF] font-sans selection:bg-blue-200">
             {isDemoOpen && (
                 <div 
                     id="modal-overlay"
@@ -49,6 +59,7 @@ const Hero = () => {
                 <div className="h-28 w-28 rounded-full bg-gradient-to-br from-[#FFEB3B] to-[#FDB813] shadow-[0_0_60px_20px_rgba(253,184,19,0.4)]"></div>
                 <div className="absolute -inset-4 rounded-full border-[1px] border-white/20 blur-sm"></div>
             </div>
+            
             <div className="absolute top-24 -right-20 w-[600px] text-white/20 opacity-60 pointer-events-none">
                 <svg viewBox="0 0 500 200" fill="currentColor">
                     <path d="M100 150 C 80 150, 60 140, 50 120 C 30 130, 0 120, 0 90 C 0 50, 40 30, 70 40 C 90 10, 150 0, 190 30 C 220 10, 280 20, 300 60 C 330 60, 350 80, 350 100 C 350 130, 320 150, 290 150 Z" />
@@ -105,13 +116,16 @@ const Hero = () => {
                 </div>
 
                 <div className="relative mt-20 flex w-full grow justify-center pb-20 bottom-0">
-                    <div className="relative z-20 max-w-5xl w-full">
+                    <motion.div 
+                        style={{ y: parallaxY }}
+                        className="relative z-20 max-w-5xl w-full"
+                    >
                         <img
-                            src="https://res.cloudinary.com/dfcr2wmux/image/upload/v1764143519/hero_jvg8dv.png" 
+                            src="https://res.cloudinary.com/dfcr2wmux/image/upload/v1764576465/vk_18_erehrb.png" 
                             alt="Daily Fit Dashboard and Mobile App"
                             className="w-full h-auto object-contain drop-shadow-2xl animate-fade-in-up"
                         />
-                    </div>
+                    </motion.div>
 
                     <div className="absolute top-[10%] left-[5%] animate-bounce delay-1000 hidden lg:block z-30">
                         <FloatingGlassCard icon="☀️" color="bg-orange-50" />
@@ -132,7 +146,6 @@ const Hero = () => {
         </div>
     );
 };
-
 
 const GlassButton = ({ text, onClick }) => (
     <button 

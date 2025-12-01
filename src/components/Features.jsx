@@ -1,5 +1,16 @@
 import React from "react";
-import { MapPin, Wand2, FileText, Monitor, Mail, Send, ArrowRight } from "lucide-react";
+import { motion } from "motion/react";
+import { TiltCard, DataBar } from "./ui/TiltCard";
+import { 
+  MapPin, 
+  Wand2, 
+  FileText, 
+  Monitor, 
+  Mail, 
+  Send, 
+  ArrowRight,
+  Zap
+} from "lucide-react";
 import { FeatureCard } from "./ui/FeatureCard";
 import outfitSunny from "../assets/outfit-sunny.jpg";
 import outfitCloudy from "../assets/outfit-cloudy.jpg";
@@ -24,97 +35,103 @@ const outfitExamples = [
 ];
 
 export default function FeatureShowcase() {
-  const cardBaseClasses = "group relative flex flex-col justify-between h-[350px] p-8 rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:border-gray-900 hover:shadow-xl overflow-hidden";
-
   return (
-    <section className="py-24 px-6 bg-white text-gray-900">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-20">
-          <h2 className="text-3xl md:text-5xl font-rosca mb-6 tracking-tight">
-            Your Weather, Your Style
-          </h2>
-          <p className="text-xl text-gray-500 max-w-2xl leading-relaxed">
-            Three simple steps to never be caught unprepared by the weather again. 
-            Powered by advanced AI to curate your daily look.
-          </p>
+    <section className="py-32 px-6 bg-white text-gray-900 overflow-hidden relative">
+      <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-blue-50/50 to-transparent pointer-events-none" />
+      <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-purple-100/40 blur-[100px] rounded-full pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto relative z-10">
+
+        <div className="mb-24 space-y-6 text-center md:text-left">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-sm font-bold text-blue-600 tracking-wide"
+          >
+             <Zap size={14} className="fill-blue-600" />
+             <span>Core Intelligence</span>
+          </motion.div>
+          
+          <motion.h2 
+             initial={{ opacity: 0, y: 20 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             className="text-5xl md:text-7xl font-rosca tracking-tight text-gray-900"
+          >
+            Your Weather, <br className="md:hidden" />
+            <span className="text-blue-400">
+               Your Style
+            </span>
+          </motion.h2>
+          
+          <motion.p 
+             initial={{ opacity: 0, y: 20 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             transition={{ delay: 0.1 }}
+             className="text-xl text-gray-500 max-w-2xl leading-relaxed"
+          >
+            Powered by a neural engine that understands style, comfort, and meteorology simultaneously.
+          </motion.p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className={cardBaseClasses}>
-            <div>
-              <div className="w-12 h-12 mb-6 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-100 text-gray-900 group-hover:bg-red-600 group-hover:text-white transition-colors duration-300">
-                <MapPin size={24} strokeWidth={1.5} />
-              </div>
-              
-              <h3 className="text-xl font-semibold mb-4">Accurate Forecasts</h3>
-              
-              <p className="text-gray-500 leading-relaxed text-sm">
-                Get a reliable, up-to-the-minute weather forecast for your specific city.
-                Choose exactly how you want to receive it: on your personal dashboard,
-                in your inbox, or via Telegram.
-              </p>
-            </div>
-            <div className="mt-8 pt-8 border-t border-gray-100 flex items-center gap-6 text-gray-400">
-              <Monitor size={20} className="hover:text-gray-900 transition-colors" />
-              <Mail size={20} className="hover:text-red-400 transition-colors" />
-              <Send size={20} className="hover:text-blue-400 transition-colors" />
-            </div>
-          </div>
-          <div className={cardBaseClasses}>
-            <div>
-             <div className="w-12 h-12 mb-6 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                <Wand2 size={24} strokeWidth={1.5} />
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24 perspective-1000">
+            <TiltCard 
+              icon={MapPin}
+              title="Hyper-Local"
+              desc="Coordinates locked to your exact block. We don't just know the city; we know your street's micro-climate."
+              accentColor="blue"
+            >
+               <div className="mt-8 pt-8 border-t border-gray-100 flex items-center gap-6">
+                  {[Monitor, Mail, Send].map((Icon, i) => (
+                    <motion.div 
+                      key={i}
+                      whileHover={{ y: -5, color: "#2563eb" }}
+                      className="text-gray-400 transition-colors"
+                    >
+                      <Icon size={24} strokeWidth={1.5} />
+                    </motion.div>
+                  ))}
+               </div>
+            </TiltCard>
 
-              <h3 className="text-xl font-semibold mb-4">AI Wardrobe Stylist</h3>
-
-              <p className="text-gray-500 leading-relaxed text-sm">
-                This is where the magic happens. Our AI analyzes the day's temperature,
-                humidity, and wind to generate a unique, stylish outfit image tailored just for you.
-              </p>
-            </div>
-            <div className="mt-auto pt-8 border-t border-transparent group-hover:border-gray-100 transition-colors duration-300">
-              <button className="group/btn inline-flex items-center text-sm font-bold text-blue-600 hover:text-blue-700">
-                See Examples
-                <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-              </button>
-            </div>
-          </div>
-          <div className={cardBaseClasses}>
-            <div>
-              <div className="w-12 h-12 mb-6 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-100 text-gray-900 group-hover:bg-gray-900 group-hover:text-white transition-colors duration-300">
-                <FileText size={24} strokeWidth={1.5} />
-              </div>
-
-              <h3 className="text-xl font-semibold mb-4">Contextual Insights</h3>
-
-              <p className="text-gray-500 leading-relaxed text-sm">
-                More than just a picture. We give you the "Why". 
-                "It's 20°C, but wind chill makes it feel like 16°C. A windbreaker is smart."
-              </p>
-            </div>
-            <div className="mt-8 space-y-3 pt-8 border-t border-gray-100">
-              <div className="h-1.5 w-3/4 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full w-2/3 bg-gray-300 group-hover:bg-gray-900 transition-colors duration-500" />
-              </div>
-              <div className="h-1.5 w-1/2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full w-1/3 bg-gray-300 group-hover:bg-gray-900 transition-colors duration-500" />
-              </div>
-            </div>
-          </div>
-
+            <TiltCard 
+              icon={Wand2}
+              title="AI Stylist"
+              desc="The engine processes 50+ variables (humidity, wind chill, UV) to render the perfect fit for right now."
+              accentColor="purple"
+            >
+               <div className="mt-auto pt-8 border-t border-transparent group-hover:border-gray-100 transition-colors duration-500">
+                  <button className="flex items-center gap-2 text-sm font-bold text-purple-600 group-hover:text-purple-700 transition-colors">
+                    <span>View Matrix</span>
+                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+               </div>
+          </TiltCard>
+          
+            <TiltCard 
+              icon={FileText}
+              title="Smart Context"
+              desc="Data with reasoning. We explain *why* you need that jacket, translating raw metrics into comfort."
+              accentColor="emerald"
+            >
+               <div className="mt-8 space-y-4 pt-8 border-t border-gray-100">
+                  <DataBar label="Temp Accuracy" percent="92%" color="bg-emerald-500" delay={0} />
+                  <DataBar label="Style Match" percent="96%" color="bg-blue-500" delay={0.2} />
+               </div>
+            </TiltCard>
         </div>
-        <div className="bg-card mt-4 rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:border-gray-900 hover:shadow-xl p-8 md:p-12 border-border/50 shadow-lg">
-          <div className="text-center mb-8">
-            <h3 className="text-3xl font-rosca text-foreground mb-3">
-              AI-Generated Outfit Examples
-            </h3>
-            <p className="text-muted-foreground font-rosca italic">
-              See how our AI adapts your wardrobe to any weather condition
-            </p>
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="relative rounded-[2.5rem] border border-gray-200 bg-white shadow-2xl p-8 md:p-12 overflow-hidden"
+        >
+          <div className="text-center mb-10">
+             <h3 className="text-3xl font-rosca text-gray-900 mb-2">The Output</h3>
+             <p className="text-gray-500">Real-time generations from the engine.</p>
           </div>
 
           <FeatureCard data={outfitExamples} />
-        </div>
+        </motion.div>
       </div>
     </section>
   );
