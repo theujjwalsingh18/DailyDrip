@@ -59,7 +59,7 @@ export default function Footer() {
               <FaTelegramPlane size={20} />
             </a>
             <a
-              href="https://t.me/theujjwalsingh18"
+              href="https://linkedin.com/in/theujjwalsingh18/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-400  hover:text-[#0088cc] transition-colors"
