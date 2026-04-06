@@ -1,4 +1,5 @@
 import React from 'react';
+import { config } from '@/config/env';
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -11,6 +12,7 @@ const getGreeting = () => {
 
 const GreetingSection = ({ userName = "Jhon" }) => {
   const greeting = getGreeting();
+  const helloKittyImg = config.KITTY_URL;
 
   return (
     <div className="bg-white/30 backdrop-blur-xl p-7 rounded-3xl shadow-xl border border-white/40">
@@ -41,7 +43,7 @@ const GreetingSection = ({ userName = "Jhon" }) => {
 
         <div className="flex justify-center md:justify-end w-full md:w-auto">
           <img
-            src="https://www.animatedimages.org/data/media/1250/animated-hello-kitty-image-0066.gif"
+            src={helloKittyImg}
             alt="Hello Kitty"
             className="w-32 h-32 sm:w-40 sm:h-40 md:w-36 md:h-36 object-contain shrink-0"
           />
